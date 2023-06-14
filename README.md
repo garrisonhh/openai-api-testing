@@ -2,7 +2,7 @@
 
 ## how do I use your stupid code
 
-written in python 3.11 with the requests library.
+written in python 3.11 with the requests library. if you use nix, this includes a nix flake to ensure version parity.
 
 ```bash
 # you can omit the key to use the free api, but this is heavily rate limited
