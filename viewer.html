@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<!--
+  
+-->
+
+<head>
+
+<!-- style -------------------------------------------------------------------->
+<style>
+
+:root {
+  --bg: #222;
+  --fg: #CCC;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  
+  background-color: var(--bg);
+  color: var(--fg);
+
+  margin: 0;
+  padding: 10px;
+  width: 100%;
+  height: 100%;
+}
+
+/* reasonable defaults */
+body * {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg);
+  color: var(--fg);
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  width: max(40%, 480px);
+  margin: auto; /* centers horizontally */
+  padding: 5px;
+  border: 1px solid var(--fg);
+}
+
+#file-select {
+  padding: 5px;
+}
+
+#file-contents, #file-contents * {
+  padding: 5px;
+  margin: 5px;
+  border: 1px solid var(--fg);
+}
+
+.file-error {
+  border-color: red !important;
+}
+
+.convo {
+  background-color: darkgreen;
+}
+
+</style>
+
+<!-- script ------------------------------------------------------------------->
+<script>
+
+function makeMsg({ role, content }) {
+  const msgDiv = document.createElement('div');
+  msgDiv.classList.add('convo-msg');
+  msgDiv.innerText = `[${role}] ${content}`;
+
+  return msgDiv;
+};
+
+function makeConvo(msgs) {
+  const convoDiv = document.createElement('div');
+  convoDiv.classList.add('convo');
+  convoDiv.append(...msgs.map(makeMsg));
+  
+  return convoDiv;
+}
+
+// applies file contents to html page, showing an error message if necessary
+function insertFileContents(text) {
+  const contentDiv = document.querySelector('#file-contents');
+
+  // clear previous contents
+  contentDiv.innerHTML = '';
+
+  // parse json into html
+  try {
+    const convos = JSON.parse(text);
+    contentDiv.append(...convos.map(makeConvo));
+  } catch (e) {
+    // some error happened
+    const errDiv = document.createElement('div');
+    errDiv.classList.add('file-error');
+    errDiv.innerText = e.toString();
+
+    contentDiv.appendChild(errDiv);
+  }
+}
+
+addEventListener('load', () => {
+  const reader = new FileReader();
+  reader.addEventListener('load', () => {
+    insertFileContents(reader.result);
+  });
+
+  document.querySelector('#file-select').addEventListener('change', (ev) => {
+    const file = ev.target.files[0];
+    reader.readAsText(file);
+  });
+});
+
+</script>
+</head>
+
+<!-- markup ------------------------------------------------------------------->
+<body>
+  <main>
+    <input id="file-select" type="file"/>
+    <div id="file-contents">
+      <!-- convos inserted here -->
+    </div>
+  </main>
+</body>
+
+</html>
