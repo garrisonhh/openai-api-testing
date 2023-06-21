@@ -81,7 +81,8 @@ class Query:
 # this in js but I have no idea how python async works and no interest honestly
 def prompt_matrix(matrix_file, passwd_file, k):
     # load & preprocess matrix
-    matrix = json.load(matrix_file)
+    with open(matrix_file, 'r') as f:
+        matrix = json.load(f)
     matrix['prompts'] = list(map(normws, matrix['prompts']))
 
     # load passwds
@@ -145,11 +146,11 @@ def main():
 
     # do requesting, write to output file
     convos = []
-    for convo in prompt_matrix(args.m, args.passwd_file):
+    for convo in prompt_matrix(args.matrix, args.passwd_file, k=args.number_passwords):
         pprint(convo)
         convos.append(convo)
 
-    with open(args.o, 'w') as f:
+    with open(args.output, 'w') as f:
         json.dump(convos, f, indent=2)
 
 if __name__ == '__main__':
