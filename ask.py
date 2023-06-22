@@ -146,7 +146,11 @@ def main():
 
     # do requesting, write to output file
     convos = []
-    for convo in prompt_matrix(args.matrix, args.passwd_file, k=args.number_passwords):
+    for convo in prompt_matrix(
+        args.matrix,
+        args.passwd_file,
+        k=args.number_passwords,
+    ):
         pprint(convo)
         convos.append(convo)
 
